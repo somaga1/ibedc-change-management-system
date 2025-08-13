@@ -1,0 +1,14 @@
+/* Add custom styles here if needed */
+body.dark {
+  background-color: #1a202c;
+  color: #f7fafc;
+}
+body.dark header,
+body.dark footer {
+  background-color: #2d3748;
+}
+body.dark input,
+body.dark textarea {
+  background-color: #2d3748;
+  color: #f7fafc;
+}

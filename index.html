@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>IBEDC Change Management System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body class="bg-gray-50 min-h-screen flex flex-col">
+  <main class="flex-1 p-6">
+    <div class="max-w-3xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-8">
+      <div class="flex justify-center mb-6">
+        <img src="assets/logo.png" alt="IBEDC Logo" class="h-16" />
+      </div>
+      <h1 class="text-2xl font-bold text-center mb-6">IBEDC Change Management System</h1>
+      <form id="changeForm" class="space-y-8">
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Submission Stage</h2>
+          <label for="changeTitle" class="block font-medium">Change Title:</label>
+          <input type="text" id="changeTitle" name="changeTitle" class="w-full border rounded px-3 py-2 mb-2" placeholder="e.g. Update Billing System" />
+          <label for="changeRequester" class="block font-medium">Change Requester:</label>
+          <input type="text" id="changeRequester" name="changeRequester" class="w-full border rounded px-3 py-2 mb-2" placeholder="Your Name" />
+          <label for="reasonForChange" class="block font-medium">Reason for Change:</label>
+          <textarea id="reasonForChange" name="reasonForChange" class="w-full border rounded px-3 py-2 mb-2" placeholder="Describe the reason"></textarea>
+          <label for="changeType" class="block font-medium">Change Type:</label>
+          <select id="changeType" name="changeType" class="w-full border rounded px-3 py-2 mb-2">
+            <option value="">Select Change Type</option>
+            <option value="Minor">Minor</option>
+            <option value="Major">Major</option>
+          </select>
+          <label for="riskLevel" class="block font-medium">Risk Level:</label>
+          <select id="riskLevel" name="riskLevel" class="w-full border rounded px-3 py-2 mb-2">
+            <option value="">Select Risk Level</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+          <label for="impact" class="block font-medium">Impact:</label>
+          <input type="text" id="impact" name="impact" class="w-full border rounded px-3 py-2 mb-2" />
+          <label for="scheduledStart" class="block font-medium">Scheduled Start:</label>
+          <input type="datetime-local" id="scheduledStart" name="scheduledStart" class="w-full border rounded px-3 py-2 mb-2" />
+          <label for="scheduledEnd" class="block font-medium">Scheduled End:</label>
+          <input type="datetime-local" id="scheduledEnd" name="scheduledEnd" class="w-full border rounded px-3 py-2 mb-2" />
+        </section>
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Planning Stage</h2>
+          <label for="rolloutPlan" class="block font-medium">Rollout Plan:</label>
+          <textarea id="rolloutPlan" name="rolloutPlan" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+          <label for="backoutPlan" class="block font-medium">Backout Plan:</label>
+          <textarea id="backoutPlan" name="backoutPlan" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+          <label for="downtimeDescription" class="block font-medium">Downtime Description:</label>
+          <textarea id="downtimeDescription" name="downtimeDescription" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+          <label for="downtimeStart" class="block font-medium">Downtime Start Time:</label>
+          <input type="time" id="downtimeStart" name="downtimeStart" class="w-full border rounded px-3 py-2 mb-2" />
+          <label for="downtimeEnd" class="block font-medium">Downtime End Time:</label>
+          <input type="time" id="downtimeEnd" name="downtimeEnd" class="w-full border rounded px-3 py-2 mb-2" />
+        </section>
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Approval Stage</h2>
+          <label for="approvedBy1" class="block font-medium">Approved By:</label>
+          <input type="text" id="approvedBy1" name="approvedBy1" class="w-full border rounded px-3 py-2 mb-2" />
+          <label for="approvedBy2" class="block font-medium">Approved By (2):</label>
+          <input type="text" id="approvedBy2" name="approvedBy2" class="w-full border rounded px-3 py-2 mb-2" />
+        </section>
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Implementation Stage</h2>
+          <label for="taskDetails" class="block font-medium">Task Details:</label>
+          <textarea id="taskDetails" name="taskDetails" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+        </section>
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Review Stage</h2>
+          <label for="reviewStage" class="block font-medium">Review:</label>
+          <textarea id="reviewStage" name="reviewStage" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+        </section>
+        <section>
+          <h2 class="text-xl font-semibold mb-4">Closed Stage</h2>
+          <label for="closedStage" class="block font-medium">Closure Details:</label>
+          <textarea id="closedStage" name="closedStage" class="w-full border rounded px-3 py-2 mb-2"></textarea>
+        </section>
+        <button type="button" onclick="generatePDF()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Generate PDF</button>
+      </form>
+    </div>
+  </main>
+  <footer class="bg-white p-4 mt-auto flex items-center justify-center">
+    <img src="assets/banner.png" alt="Changing Lives Banner" class="h-10">
+  </footer>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="./script.js"></script>
+</body>
+</html>
