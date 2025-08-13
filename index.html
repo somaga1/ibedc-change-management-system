@@ -9,44 +9,48 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body class="bg-gray-50 min-h-screen flex flex-col">
-  <main class="flex-1 p-6">
-    <div class="max-w-3xl mx-auto mt-8 bg-white shadow-lg rounded-lg p-8">
-      <div class="flex justify-center mb-6">
-        <img src="assets/logo.png" alt="IBEDC Logo" class="h-16" />
-      </div>
-      <h1 class="text-2xl font-bold text-center mb-6">IBEDC Change Management System</h1>
-      <form id="changeForm" class="space-y-8">
+  <header class="sticky top-0 z-10 bg-white shadow flex items-center justify-between px-8 py-4">
+    <div class="flex items-center gap-4">
+      <img src="assets/logo.png" alt="IBEDC Logo" class="h-12" />
+      <span class="text-2xl font-bold text-blue-700 tracking-wide">IBEDC Change Management</span>
+    </div>
+    <span class="text-sm text-gray-500 font-medium">Change Automation System</span>
+  </header>
+  <main class="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
+  <div class="w-full max-w-5xl bg-white shadow-2xl rounded-2xl p-10 mt-10 mb-10 animate-fade-in">
+      <h1 class="text-3xl font-extrabold text-center text-blue-700 mb-8 tracking-tight">Change Management Workflow</h1>
+      <form id="changeForm" class="space-y-10">
         <!-- Progress Bar & Stage Navigation -->
-        <div id="progressBar" class="flex items-center justify-between mb-8">
+        <div id="progressBar" class="flex items-center justify-between mb-10">
           <div class="flex-1 flex items-center">
             <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold" id="step-1">1</div>
-              <span class="ml-2 font-semibold">Submission</span>
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold shadow transition-all duration-300" id="step-1">1</div>
+              <span class="ml-3 font-semibold text-blue-700">Submission</span>
             </div>
-            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
             <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold" id="step-2">2</div>
-              <span class="ml-2 font-semibold">Planning</span>
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-2">2</div>
+              <span class="ml-3 font-semibold text-blue-700">Planning</span>
             </div>
-            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
             <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold" id="step-3">3</div>
-              <span class="ml-2 font-semibold">Approval</span>
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-3">3</div>
+              <span class="ml-3 font-semibold text-blue-700">Approval</span>
             </div>
-            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
             <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold" id="step-4">4</div>
-              <span class="ml-2 font-semibold">Implementation</span>
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-4">4</div>
+              <span class="ml-3 font-semibold text-blue-700">Implementation</span>
             </div>
-            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
+            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
             <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold" id="step-5">5</div>
-              <span class="ml-2 font-semibold">Review</span>
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-5">5</div>
+              <span class="ml-3 font-semibold text-blue-700">Review</span>
             </div>
-            <div class="flex-1 h-1 bg-gray-300 mx-2"></div>
-            <div class="flex items-center">
-              <div class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold" id="step-6">6</div>
-              <span class="ml-2 font-semibold">Closed</span>
+            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
+            <div class="flex items-center" style="min-width:0;">
+              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-6">6</div>
+              <span class="ml-3 font-semibold text-blue-700">Closed</span>
             </div>
           </div>
         </div>
@@ -118,7 +122,8 @@
     </div>
   </main>
   <footer class="bg-white p-4 mt-auto flex items-center justify-center">
-    <img src="assets/banner.png" alt="Changing Lives Banner" class="h-10">
+    <img src="assets/banner.png" alt="Changing Lives Banner" class="h-10" />
+    <span class="ml-4 text-gray-400 text-sm">&copy; 2025 IBEDC. All rights reserved.</span>
   </footer>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
   <script src="./script.js"></script>
