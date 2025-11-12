@@ -1,131 +1,1575 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>IBEDC Change Management System</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>IBEDC Change Management System</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<script>
+    tailwind.config = {
+        theme: {
+            extend: {
+                colors: {
+                    'ibedc-orange': '#FF8C00',
+                    'ibedc-blue': '#003366',
+                    'ibedc-light': '#F5F5F5',
+                }
+            }
+        }
+    }
+</script>
+<style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+    
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    }
+
+    /* Dark mode support */
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg-primary: #181818;
+            --bg-secondary: #252525;
+            --bg-tertiary: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f9fafb;
+            --bg-tertiary: #f3f4f6;
+            --text-primary: #111827;
+            --text-secondary: #6b7280;
+            --border-color: #e5e7eb;
+        }
+    }
+
+    .dark body {
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+    }
+
+    .card {
+        background-color: var(--bg-primary);
+        border: 1px solid var(--border-color);
+    }
+
+    .card-secondary {
+        background-color: var(--bg-secondary);
+    }
+
+    .smooth-transition {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .hover-lift:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    }
+
+    .status-badge {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+    }
+
+    .status-pending { background-color: #FEF3C7; color: #92400E; }
+    .status-in-review { background-color: #DBEAFE; color: #1E40AF; }
+    .status-approved { background-color: #D1FAE5; color: #065F46; }
+    .status-rejected { background-color: #FEE2E2; color: #991B1B; }
+    .status-implemented { background-color: #E0E7FF; color: #3730A3; }
+
+    .dark .status-pending { background-color: #78350F; color: #FEF3C7; }
+    .dark .status-in-review { background-color: #1E3A8A; color: #DBEAFE; }
+    .dark .status-approved { background-color: #064E3B; color: #D1FAE5; }
+    .dark .status-rejected { background-color: #7F1D1D; color: #FEE2E2; }
+    .dark .status-implemented { background-color: #312E81; color: #E0E7FF; }
+
+    .priority-low { border-left: 4px solid #10B981; }
+    .priority-medium { border-left: 4px solid #F59E0B; }
+    .priority-high { border-left: 4px solid #EF4444; }
+    .priority-critical { border-left: 4px solid #DC2626; animation: pulse 2s infinite; }
+
+    @keyframes pulse {
+        0%, 100% { border-color: #DC2626; }
+        50% { border-color: #FCA5A5; }
+    }
+
+    .btn {
+        padding: 0.5rem 1rem;
+        border-radius: 0.5rem;
+        font-weight: 500;
+        transition: all 0.2s;
+        cursor: pointer;
+        border: none;
+        font-size: 1rem;
+    }
+
+    .btn:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+    }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%);
+        color: white;
+    }
+
+    .btn-primary:hover:not(:disabled) {
+        background: linear-gradient(135deg, #FFA500 0%, #FFB52E 100%);
+        box-shadow: 0 4px 12px rgba(255, 140, 0, 0.3);
+    }
+
+    .btn-secondary {
+        background-color: var(--bg-tertiary);
+        color: var(--text-primary);
+    }
+
+    .btn-secondary:hover:not(:disabled) {
+        background-color: var(--bg-secondary);
+    }
+
+    .input-field {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid var(--border-color);
+        border-radius: 0.5rem;
+        background-color: var(--bg-primary);
+        color: var(--text-primary);
+        font-size: 1rem;
+        transition: border-color 0.2s;
+    }
+
+    .input-field:focus {
+        outline: none;
+        border-color: #FF8C00;
+        box-shadow: 0 0 0 3px rgba(255, 140, 0, 0.1);
+    }
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 1000;
+        backdrop-filter: blur(4px);
+    }
+
+    .modal-content {
+        background-color: var(--bg-primary);
+        border-radius: 1rem;
+        max-width: 90%;
+        max-height: 90vh;
+        overflow-y: auto;
+        box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .timeline {
+        position: relative;
+        padding-left: 2rem;
+    }
+
+    .timeline::before {
+        content: '';
+        position: absolute;
+        left: 0.5rem;
+        top: 0;
+        bottom: 0;
+        width: 2px;
+        background: var(--border-color);
+    }
+
+    .timeline-item {
+        position: relative;
+        margin-bottom: 1.5rem;
+    }
+
+    .timeline-item::before {
+        content: '';
+        position: absolute;
+        left: -1.65rem;
+        top: 0.5rem;
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        background: #FF8C00;
+        border: 2px solid var(--bg-primary);
+    }
+
+    .stat-card {
+        background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+        padding: 1.5rem;
+        border-radius: 1rem;
+        border: 1px solid var(--border-color);
+    }
+
+    .notification-badge {
+        position: absolute;
+        top: -0.5rem;
+        right: -0.5rem;
+        background: #EF4444;
+        color: white;
+        border-radius: 9999px;
+        padding: 0.125rem 0.5rem;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .hidden { display: none !important; }
+
+    @media (max-width: 768px) {
+        .modal-content {
+            max-width: 95%;
+            margin: 1rem;
+        }
+    }
+
+    .loading-spinner {
+        border: 3px solid var(--border-color);
+        border-top: 3px solid #FF8C00;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    .fade-in {
+        animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .chart-bar {
+        background: linear-gradient(135deg, #FF8C00 0%, #FFA500 100%);
+        transition: width 0.5s ease-in-out;
+    }
+</style>
 </head>
-<body class="bg-gray-50 min-h-screen flex flex-col">
-  <header class="sticky top-0 z-10 bg-white shadow flex items-center justify-between px-8 py-4">
-    <div class="flex items-center gap-4">
-      <img src="assets/logo.png" alt="IBEDC Logo" class="h-12" />
-      <span class="text-2xl font-bold text-blue-700 tracking-wide">IBEDC Change Management</span>
-    </div>
-    <span class="text-sm text-gray-500 font-medium">Change Automation System</span>
-  </header>
-  <main class="flex-1 flex items-center justify-center bg-gradient-to-br from-blue-50 to-blue-100">
-  <div class="w-full max-w-5xl bg-white shadow-2xl rounded-2xl p-10 mt-10 mb-10 animate-fade-in">
-      <h1 class="text-3xl font-extrabold text-center text-blue-700 mb-8 tracking-tight">Change Management Workflow</h1>
-      <form id="changeForm" class="space-y-10">
-        <!-- Progress Bar & Stage Navigation -->
-        <div id="progressBar" class="flex items-center justify-between mb-10">
-          <div class="flex-1 flex items-center">
-            <div class="flex items-center">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-blue-600 text-white font-bold shadow transition-all duration-300" id="step-1">1</div>
-              <span class="ml-3 font-semibold text-blue-700">Submission</span>
+<body>
+    <!-- App Container -->
+    <div id="app" class="min-h-screen">
+        <!-- Login Screen -->
+        <div id="loginScreen" class="min-h-screen flex items-center justify-center p-4" style="background: linear-gradient(135deg, #003366 0%, #0055AA 100%);">
+            <div class="card rounded-2xl shadow-2xl p-8 max-w-md w-full fade-in">
+                <div class="text-center mb-8">
+                    <img src="https://pfst.cf2.poecdn.net/base/image/37477ed679d96ba78427441351bf5b45daa0a16a41f317e7bf620a1d77dd6414?w=225&h=225" alt="IBEDC Logo" class="h-24 mx-auto mb-4">
+                    <h1 class="text-3xl font-bold mb-2" style="color: var(--text-primary);">Change Management System</h1>
+                    <p class="text-sm" style="color: var(--text-secondary);">Distributing power, changing lives.</p>
+                </div>
+
+                <form id="loginForm" class="space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Username</label>
+                        <input type="text" id="loginUsername" class="input-field" placeholder="Enter username" required>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Password</label>
+                        <input type="password" id="loginPassword" class="input-field" placeholder="Enter password" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary w-full">
+                        <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                    </button>
+                </form>
+
+                <div class="mt-6 p-4 rounded-lg" style="background-color: var(--bg-secondary);">
+                    <p class="text-xs font-semibold mb-2" style="color: var(--text-primary);">Demo Accounts:</p>
+                    <div class="space-y-1 text-xs" style="color: var(--text-secondary);">
+                        <div><strong>Staff:</strong> staff / staff123</div>
+                        <div><strong>Manager:</strong> manager / manager123</div>
+                        <div><strong>Executive:</strong> executive / exec123</div>
+                        <div><strong>Admin:</strong> admin / admin123</div>
+                    </div>
+                </div>
             </div>
-            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
-            <div class="flex items-center">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-2">2</div>
-              <span class="ml-3 font-semibold text-blue-700">Planning</span>
-            </div>
-            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
-            <div class="flex items-center">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-3">3</div>
-              <span class="ml-3 font-semibold text-blue-700">Approval</span>
-            </div>
-            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
-            <div class="flex items-center">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-4">4</div>
-              <span class="ml-3 font-semibold text-blue-700">Implementation</span>
-            </div>
-            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
-            <div class="flex items-center">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-5">5</div>
-              <span class="ml-3 font-semibold text-blue-700">Review</span>
-            </div>
-            <div class="flex-1 h-2 bg-blue-200 mx-2 rounded transition-all duration-300"></div>
-            <div class="flex items-center" style="min-width:0;">
-              <div class="w-10 h-10 flex items-center justify-center rounded-full bg-gray-300 text-gray-600 font-bold shadow transition-all duration-300" id="step-6">6</div>
-              <span class="ml-3 font-semibold text-blue-700">Closed</span>
-            </div>
-          </div>
         </div>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Submission Stage</h2>
-          <label for="changeTitle" class="block font-medium">Change Title:</label>
-          <input type="text" id="changeTitle" name="changeTitle" class="w-full border rounded px-3 py-2 mb-2" placeholder="e.g. Update Billing System" />
-          <label for="changeRequester" class="block font-medium">Change Requester:</label>
-          <input type="text" id="changeRequester" name="changeRequester" class="w-full border rounded px-3 py-2 mb-2" placeholder="Your Name" />
-          <label for="reasonForChange" class="block font-medium">Reason for Change:</label>
-          <textarea id="reasonForChange" name="reasonForChange" class="w-full border rounded px-3 py-2 mb-2" placeholder="Describe the reason"></textarea>
-          <label for="changeType" class="block font-medium">Change Type:</label>
-          <select id="changeType" name="changeType" class="w-full border rounded px-3 py-2 mb-2">
-            <option value="">Select Change Type</option>
-            <option value="Minor">Minor</option>
-            <option value="Major">Major</option>
-          </select>
-          <label for="riskLevel" class="block font-medium">Risk Level:</label>
-          <select id="riskLevel" name="riskLevel" class="w-full border rounded px-3 py-2 mb-2">
-            <option value="">Select Risk Level</option>
-            <option value="Low">Low</option>
-            <option value="Medium">Medium</option>
-            <option value="High">High</option>
-          </select>
-          <label for="impact" class="block font-medium">Impact:</label>
-          <input type="text" id="impact" name="impact" class="w-full border rounded px-3 py-2 mb-2" />
-          <label for="scheduledStart" class="block font-medium">Scheduled Start:</label>
-          <input type="datetime-local" id="scheduledStart" name="scheduledStart" class="w-full border rounded px-3 py-2 mb-2" />
-          <label for="scheduledEnd" class="block font-medium">Scheduled End:</label>
-          <input type="datetime-local" id="scheduledEnd" name="scheduledEnd" class="w-full border rounded px-3 py-2 mb-2" />
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Planning Stage</h2>
-          <label for="rolloutPlan" class="block font-medium">Rollout Plan:</label>
-          <textarea id="rolloutPlan" name="rolloutPlan" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-          <label for="backoutPlan" class="block font-medium">Backout Plan:</label>
-          <textarea id="backoutPlan" name="backoutPlan" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-          <label for="downtimeDescription" class="block font-medium">Downtime Description:</label>
-          <textarea id="downtimeDescription" name="downtimeDescription" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-          <label for="downtimeStart" class="block font-medium">Downtime Start Time:</label>
-          <input type="time" id="downtimeStart" name="downtimeStart" class="w-full border rounded px-3 py-2 mb-2" />
-          <label for="downtimeEnd" class="block font-medium">Downtime End Time:</label>
-          <input type="time" id="downtimeEnd" name="downtimeEnd" class="w-full border rounded px-3 py-2 mb-2" />
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Approval Stage</h2>
-          <label for="approvedBy1" class="block font-medium">Approved By:</label>
-          <input type="text" id="approvedBy1" name="approvedBy1" class="w-full border rounded px-3 py-2 mb-2" />
-          <label for="approvedBy2" class="block font-medium">Approved By (2):</label>
-          <input type="text" id="approvedBy2" name="approvedBy2" class="w-full border rounded px-3 py-2 mb-2" />
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Implementation Stage</h2>
-          <label for="taskDetails" class="block font-medium">Task Details:</label>
-          <textarea id="taskDetails" name="taskDetails" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Review Stage</h2>
-          <label for="reviewStage" class="block font-medium">Review:</label>
-          <textarea id="reviewStage" name="reviewStage" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-        </section>
-        <section>
-          <h2 class="text-xl font-semibold mb-4">Closed Stage</h2>
-          <label for="closedStage" class="block font-medium">Closure Details:</label>
-          <textarea id="closedStage" name="closedStage" class="w-full border rounded px-3 py-2 mb-2"></textarea>
-        </section>
-        <button type="button" onclick="generatePDF()" class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">Generate PDF</button>
-      </form>
+
+        <!-- Main Application -->
+        <div id="mainApp" class="hidden">
+            <!-- Header -->
+            <header class="card shadow-md sticky top-0 z-50">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center space-x-4">
+                            <img src="https://pfst.cf2.poecdn.net/base/image/37477ed679d96ba78427441351bf5b45daa0a16a41f317e7bf620a1d77dd6414?w=225&h=225" alt="IBEDC" class="h-10">
+                            <div>
+                                <h1 class="text-xl font-bold" style="color: var(--text-primary);">Change Management</h1>
+                                <p class="text-xs" style="color: var(--text-secondary);">Request Tracking System</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button id="notificationsBtn" class="relative p-2 rounded-full hover:bg-gray-100 dark:hover:bg-gray-800 smooth-transition">
+                                <i class="fas fa-bell text-xl" style="color: var(--text-primary);"></i>
+                                <span id="notificationBadge" class="notification-badge hidden">0</span>
+                            </button>
+                            <div class="flex items-center space-x-3">
+                                <div class="text-right">
+                                    <p class="text-sm font-semibold" style="color: var(--text-primary);" id="currentUserName"></p>
+                                    <p class="text-xs" style="color: var(--text-secondary);" id="currentUserRole"></p>
+                                </div>
+                                <button id="logoutBtn" class="btn btn-secondary">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Navigation Tabs -->
+            <div class="card shadow-sm border-b">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <nav class="flex space-x-8 overflow-x-auto">
+                        <button class="nav-tab py-4 px-2 border-b-2 font-medium text-sm smooth-transition" data-tab="dashboard">
+                            <i class="fas fa-chart-line mr-2"></i>Dashboard
+                        </button>
+                        <button class="nav-tab py-4 px-2 border-b-2 font-medium text-sm smooth-transition" data-tab="requests">
+                            <i class="fas fa-list mr-2"></i>All Requests
+                        </button>
+                        <button class="nav-tab py-4 px-2 border-b-2 font-medium text-sm smooth-transition" data-tab="pending">
+                            <i class="fas fa-clock mr-2"></i>Pending Approval
+                        </button>
+                        <button class="nav-tab py-4 px-2 border-b-2 font-medium text-sm smooth-transition" data-tab="analytics" id="analyticsTab">
+                            <i class="fas fa-chart-bar mr-2"></i>Analytics
+                        </button>
+                    </nav>
+                </div>
+            </div>
+
+            <!-- Main Content Area -->
+            <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+                <!-- Dashboard Tab -->
+                <div id="dashboardTab" class="tab-content">
+                    <div class="mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                        <div>
+                            <h2 class="text-2xl font-bold" style="color: var(--text-primary);">Dashboard</h2>
+                            <p class="text-sm" style="color: var(--text-secondary);">Overview of your change requests</p>
+                        </div>
+                        <button id="newRequestBtn" class="btn btn-primary">
+                            <i class="fas fa-plus mr-2"></i>New Request
+                        </button>
+                    </div>
+
+                    <!-- Stats Grid -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8" id="statsGrid">
+                        <!-- Stats will be populated here -->
+                    </div>
+
+                    <!-- Recent Requests -->
+                    <div class="card rounded-xl p-6">
+                        <h3 class="text-xl font-semibold mb-4" style="color: var(--text-primary);">Recent Requests</h3>
+                        <div id="recentRequests" class="space-y-4">
+                            <!-- Recent requests will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- All Requests Tab -->
+                <div id="requestsTab" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold mb-4" style="color: var(--text-primary);">All Change Requests</h2>
+                        
+                        <!-- Filters -->
+                        <div class="card rounded-xl p-4 mb-6">
+                            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Search</label>
+                                    <input type="text" id="searchInput" class="input-field" placeholder="Search by title or ID...">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Status</label>
+                                    <select id="statusFilter" class="input-field">
+                                        <option value="">All Statuses</option>
+                                        <option value="pending">Pending</option>
+                                        <option value="in-review">In Review</option>
+                                        <option value="approved">Approved</option>
+                                        <option value="rejected">Rejected</option>
+                                        <option value="implemented">Implemented</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Priority</label>
+                                    <select id="priorityFilter" class="input-field">
+                                        <option value="">All Priorities</option>
+                                        <option value="low">Low</option>
+                                        <option value="medium">Medium</option>
+                                        <option value="high">High</option>
+                                        <option value="critical">Critical</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Department</label>
+                                    <select id="departmentFilter" class="input-field">
+                                        <option value="">All Departments</option>
+                                        <option value="IT">IT</option>
+                                        <option value="Operations">Operations</option>
+                                        <option value="Finance">Finance</option>
+                                        <option value="HR">HR</option>
+                                        <option value="Engineering">Engineering</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Requests List -->
+                    <div id="requestsList" class="space-y-4">
+                        <!-- Requests will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Pending Approval Tab -->
+                <div id="pendingTab" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold" style="color: var(--text-primary);">Pending Your Approval</h2>
+                        <p class="text-sm" style="color: var(--text-secondary);">Requests requiring your review and action</p>
+                    </div>
+
+                    <div id="pendingApprovalsList" class="space-y-4">
+                        <!-- Pending approvals will be populated here -->
+                    </div>
+                </div>
+
+                <!-- Analytics Tab -->
+                <div id="analyticsTab" class="tab-content hidden">
+                    <div class="mb-6">
+                        <h2 class="text-2xl font-bold" style="color: var(--text-primary);">Analytics & Reports</h2>
+                        <p class="text-sm" style="color: var(--text-secondary);">Insights into change management performance</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                        <!-- Status Distribution -->
+                        <div class="card rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Status Distribution</h3>
+                            <div id="statusChart" class="space-y-3">
+                                <!-- Chart will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Priority Breakdown -->
+                        <div class="card rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Priority Breakdown</h3>
+                            <div id="priorityChart" class="space-y-3">
+                                <!-- Chart will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Department Activity -->
+                        <div class="card rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Department Activity</h3>
+                            <div id="departmentChart" class="space-y-3">
+                                <!-- Chart will be populated here -->
+                            </div>
+                        </div>
+
+                        <!-- Average Processing Time -->
+                        <div class="card rounded-xl p-6">
+                            <h3 class="text-lg font-semibold mb-4" style="color: var(--text-primary);">Processing Metrics</h3>
+                            <div class="space-y-4">
+                                <div class="stat-card">
+                                    <p class="text-sm" style="color: var(--text-secondary);">Average Processing Time</p>
+                                    <p class="text-3xl font-bold mt-2" style="color: #FF8C00;" id="avgProcessingTime">2.3 days</p>
+                                </div>
+                                <div class="stat-card">
+                                    <p class="text-sm" style="color: var(--text-secondary);">Approval Rate</p>
+                                    <p class="text-3xl font-bold mt-2" style="color: #10B981;" id="approvalRate">87%</p>
+                                </div>
+                                <div class="stat-card">
+                                    <p class="text-sm" style="color: var(--text-secondary);">This Month</p>
+                                    <p class="text-3xl font-bold mt-2" style="color: var(--text-primary);" id="monthlyRequests">24</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
     </div>
-  </main>
-  <footer class="bg-white p-4 mt-auto flex items-center justify-center">
-    <img src="assets/banner.png" alt="Changing Lives Banner" class="h-10" />
-    <span class="ml-4 text-gray-400 text-sm">&copy; 2025 IBEDC. All rights reserved.</span>
-  </footer>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-  <script src="./script.js"></script>
+
+    <!-- New Request Modal -->
+    <div id="newRequestModal" class="modal-overlay hidden">
+        <div class="modal-content w-full max-w-2xl p-8 m-4">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold" style="color: var(--text-primary);">New Change Request</h2>
+                <button id="closeNewRequestModal" class="text-2xl" style="color: var(--text-secondary);">&times;</button>
+            </div>
+
+            <form id="newRequestForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Request Title *</label>
+                    <input type="text" id="requestTitle" class="input-field" placeholder="Brief description of the change" required>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Change Type *</label>
+                    <select id="requestType" class="input-field" required>
+                        <option value="">Select type...</option>
+                        <option value="technical">Technical</option>
+                        <option value="process">Process</option>
+                        <option value="infrastructure">Infrastructure</option>
+                        <option value="policy">Policy</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Priority *</label>
+                    <select id="requestPriority" class="input-field" required>
+                        <option value="">Select priority...</option>
+                        <option value="low">Low - Can be scheduled</option>
+                        <option value="medium">Medium - Should be addressed soon</option>
+                        <option value="high">High - Urgent attention needed</option>
+                        <option value="critical">Critical - Immediate action required</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Department *</label>
+                    <select id="requestDepartment" class="input-field" required>
+                        <option value="">Select department...</option>
+                        <option value="IT">IT</option>
+                        <option value="Operations">Operations</option>
+                        <option value="Finance">Finance</option>
+                        <option value="HR">HR</option>
+                        <option value="Engineering">Engineering</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Detailed Description *</label>
+                    <textarea id="requestDescription" class="input-field" rows="5" placeholder="Describe the change in detail, including rationale and expected impact..." required></textarea>
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Affected Systems/Areas</label>
+                    <input type="text" id="requestAffectedAreas" class="input-field" placeholder="e.g., Billing System, Customer Portal">
+                </div>
+
+                <div>
+                    <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Expected Implementation Date</label>
+                    <input type="date" id="requestImplementationDate" class="input-field">
+                </div>
+
+                <div class="flex gap-4 pt-4">
+                    <button type="submit" class="btn btn-primary flex-1">
+                        <i class="fas fa-paper-plane mr-2"></i>Submit Request
+                    </button>
+                    <button type="button" id="cancelNewRequest" class="btn btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Request Details Modal -->
+    <div id="requestDetailsModal" class="modal-overlay hidden">
+        <div class="modal-content w-full max-w-4xl p-8 m-4">
+            <div class="flex justify-between items-start mb-6">
+                <div>
+                    <h2 class="text-2xl font-bold mb-2" style="color: var(--text-primary);" id="detailsTitle"></h2>
+                    <p class="text-sm" style="color: var(--text-secondary);" id="detailsId"></p>
+                </div>
+                <button id="closeDetailsModal" class="text-2xl" style="color: var(--text-secondary);">&times;</button>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <!-- Main Details -->
+                <div class="lg:col-span-2 space-y-6">
+                    <div class="card-secondary rounded-xl p-6">
+                        <h3 class="font-semibold mb-4" style="color: var(--text-primary);">Request Information</h3>
+                        <div class="grid grid-cols-2 gap-4 text-sm">
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Status</p>
+                                <span id="detailsStatus" class="status-badge mt-1 inline-block"></span>
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Priority</p>
+                                <span id="detailsPriority" class="mt-1 block font-semibold"></span>
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Department</p>
+                                <p id="detailsDepartment" class="mt-1" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Type</p>
+                                <p id="detailsType" class="mt-1" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Requester</p>
+                                <p id="detailsRequester" class="mt-1" style="color: var(--text-primary);"></p>
+                            </div>
+                            <div>
+                                <p class="font-medium" style="color: var(--text-secondary);">Submitted</p>
+                                <p id="detailsCreated" class="mt-1" style="color: var(--text-primary);"></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-secondary rounded-xl p-6">
+                        <h3 class="font-semibold mb-3" style="color: var(--text-primary);">Description</h3>
+                        <p id="detailsDescription" class="text-sm whitespace-pre-wrap" style="color: var(--text-primary);"></p>
+                    </div>
+
+                    <div class="card-secondary rounded-xl p-6">
+                        <h3 class="font-semibold mb-3" style="color: var(--text-primary);">Affected Systems</h3>
+                        <p id="detailsAffectedAreas" class="text-sm" style="color: var(--text-primary);"></p>
+                    </div>
+
+                    <!-- Approval Section (for approvers) -->
+                    <div id="approvalSection" class="card-secondary rounded-xl p-6 hidden">
+                        <h3 class="font-semibold mb-4" style="color: var(--text-primary);">Your Approval</h3>
+                        <form id="approvalForm" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium mb-2" style="color: var(--text-primary);">Comments</label>
+                                <textarea id="approvalComments" class="input-field" rows="3" placeholder="Add your comments (optional)"></textarea>
+                            </div>
+                            <div class="flex gap-4">
+                                <button type="button" id="approveBtn" class="btn flex-1" style="background: #10B981; color: white;">
+                                    <i class="fas fa-check mr-2"></i>Approve
+                                </button>
+                                <button type="button" id="rejectBtn" class="btn flex-1" style="background: #EF4444; color: white;">
+                                    <i class="fas fa-times mr-2"></i>Reject
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Timeline -->
+                <div class="space-y-6">
+                    <div class="card-secondary rounded-xl p-6">
+                        <h3 class="font-semibold mb-4" style="color: var(--text-primary);">Approval Timeline</h3>
+                        <div id="approvalTimeline" class="timeline">
+                            <!-- Timeline will be populated here -->
+                        </div>
+                    </div>
+
+                    <div class="card-secondary rounded-xl p-6">
+                        <h3 class="font-semibold mb-4" style="color: var(--text-primary);">Audit Trail</h3>
+                        <div id="auditTrail" class="space-y-3">
+                            <!-- Audit trail will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Panel -->
+    <div id="notificationsPanel" class="hidden fixed right-4 top-20 w-80 card rounded-xl shadow-2xl p-4 z-50 max-h-96 overflow-y-auto">
+        <h3 class="font-semibold mb-3" style="color: var(--text-primary);">Notifications</h3>
+        <div id="notificationsList" class="space-y-2">
+            <!-- Notifications will be populated here -->
+        </div>
+    </div>
+
+    <script>
+        // Dark mode initialization
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Data Models
+        class User {
+            constructor(id, username, name, email, role, department) {
+                this.id = id;
+                this.username = username;
+                this.name = name;
+                this.email = email;
+                this.role = role; // requester, approver, executive, admin
+                this.department = department;
+            }
+        }
+
+        class ChangeRequest {
+            constructor(id, title, description, requesterId, department, type, priority, affectedAreas, implementationDate) {
+                this.id = id;
+                this.title = title;
+                this.description = description;
+                this.requesterId = requesterId;
+                this.department = department;
+                this.type = type;
+                this.priority = priority;
+                this.affectedAreas = affectedAreas;
+                this.implementationDate = implementationDate;
+                this.status = 'pending';
+                this.createdAt = new Date().toISOString();
+                this.updatedAt = new Date().toISOString();
+                this.currentApproverIndex = 0;
+                this.approvers = [];
+                this.approvals = [];
+                this.auditLog = [{
+                    userId: requesterId,
+                    action: 'created',
+                    timestamp: new Date().toISOString(),
+                    details: 'Request created'
+                }];
+            }
+        }
+
+        // State Management
+        class AppState {
+            constructor() {
+                this.currentUser = null;
+                this.users = this.initializeUsers();
+                this.requests = this.loadRequests();
+                this.notifications = [];
+            }
+
+            initializeUsers() {
+                const users = [
+                    new User(1, 'admin', 'Admin User', 'admin@ibedc.com', 'admin', 'IT'),
+                    new User(2, 'staff', 'John Doe', 'john.doe@ibedc.com', 'requester', 'Operations'),
+                    new User(3, 'manager', 'Jane Smith', 'jane.smith@ibedc.com', 'approver', 'Operations'),
+                    new User(4, 'executive', 'David Williams', 'david.williams@ibedc.com', 'executive', 'Executive'),
+                    new User(5, 'it_head', 'Sarah Johnson', 'sarah.johnson@ibedc.com', 'approver', 'IT'),
+                    new User(6, 'finance_mgr', 'Michael Brown', 'michael.brown@ibedc.com', 'approver', 'Finance'),
+                ];
+
+                localStorage.setItem('users', JSON.stringify(users));
+                return users;
+            }
+
+            loadRequests() {
+                const stored = localStorage.getItem('requests');
+                if (stored) {
+                    return JSON.parse(stored);
+                }
+                
+                // Initialize with sample data
+                const sampleRequests = this.createSampleRequests();
+                localStorage.setItem('requests', JSON.stringify(sampleRequests));
+                return sampleRequests;
+            }
+
+            createSampleRequests() {
+                const requests = [];
+                const titles = [
+                    'Upgrade Customer Billing System',
+                    'Implement Two-Factor Authentication',
+                    'Update Network Infrastructure',
+                    'Revise Employee Leave Policy',
+                    'Deploy New CRM Software'
+                ];
+
+                titles.forEach((title, index) => {
+                    const req = new ChangeRequest(
+                        Date.now() + index,
+                        title,
+                        `This is a detailed description for ${title}. The change is necessary to improve operational efficiency and service delivery.`,
+                        2, // staff user
+                        ['Operations', 'IT', 'Finance', 'HR', 'Engineering'][index % 5],
+                        ['technical', 'process', 'infrastructure', 'policy', 'technical'][index % 5],
+                        ['low', 'medium', 'high', 'critical', 'medium'][index % 5],
+                        'Multiple systems',
+                        new Date(Date.now() + (index + 1) * 7 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]
+                    );
+
+                    // Set approvers based on request characteristics
+                    req.approvers = this.determineApprovers(req);
+
+                    // Simulate some approved/in-review requests
+                    if (index === 1) {
+                        req.status = 'in-review';
+                        req.currentApproverIndex = 1;
+                        req.approvals.push({
+                            approverId: 3,
+                            action: 'approved',
+                            comments: 'Looks good to me',
+                            timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                        });
+                        req.auditLog.push({
+                            userId: 3,
+                            action: 'approved',
+                            timestamp: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+                            details: 'Approved by department manager'
+                        });
+                    } else if (index === 2) {
+                        req.status = 'approved';
+                        req.approvals.push(
+                            {
+                                approverId: 3,
+                                action: 'approved',
+                                comments: 'Approved',
+                                timestamp: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString()
+                            },
+                            {
+                                approverId: 4,
+                                action: 'approved',
+                                comments: 'Executive approval granted',
+                                timestamp: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString()
+                            }
+                        );
+                    } else if (index === 3) {
+                        req.status = 'rejected';
+                        req.approvals.push({
+                            approverId: 3,
+                            action: 'rejected',
+                            comments: 'Needs more documentation',
+                            timestamp: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+                        });
+                    }
+
+                    requests.push(req);
+                });
+
+                return requests;
+            }
+
+            determineApprovers(request) {
+                const approvers = [];
+                
+                // Department head always approves
+                const deptHead = this.users.find(u => u.role === 'approver' && u.department === request.department);
+                if (deptHead) approvers.push(deptHead.id);
+
+                // High priority or critical needs executive approval
+                if (request.priority === 'high' || request.priority === 'critical') {
+                    const exec = this.users.find(u => u.role === 'executive');
+                    if (exec) approvers.push(exec.id);
+                }
+
+                // Technical changes need IT approval
+                if (request.type === 'technical') {
+                    const itHead = this.users.find(u => u.department === 'IT' && u.role === 'approver');
+                    if (itHead && !approvers.includes(itHead.id)) approvers.push(itHead.id);
+                }
+
+                return approvers.length > 0 ? approvers : [3]; // Default to manager
+            }
+
+            saveRequests() {
+                localStorage.setItem('requests', JSON.stringify(this.requests));
+            }
+
+            addRequest(request) {
+                request.approvers = this.determineApprovers(request);
+                this.requests.unshift(request);
+                this.saveRequests();
+                this.addNotification(`New request created: ${request.title}`, request.approvers);
+            }
+
+            updateRequest(requestId, updates) {
+                const index = this.requests.findIndex(r => r.id === requestId);
+                if (index !== -1) {
+                    this.requests[index] = { ...this.requests[index], ...updates, updatedAt: new Date().toISOString() };
+                    this.saveRequests();
+                }
+            }
+
+            addApproval(requestId, approverId, action, comments) {
+                const request = this.requests.find(r => r.id === requestId);
+                if (!request) return;
+
+                const approval = {
+                    approverId,
+                    action,
+                    comments,
+                    timestamp: new Date().toISOString()
+                };
+
+                request.approvals.push(approval);
+                request.currentApproverIndex++;
+
+                // Update audit log
+                const approver = this.users.find(u => u.id === approverId);
+                request.auditLog.push({
+                    userId: approverId,
+                    action,
+                    timestamp: approval.timestamp,
+                    details: `${action === 'approved' ? 'Approved' : 'Rejected'} by ${approver.name}`
+                });
+
+                // Update status
+                if (action === 'rejected') {
+                    request.status = 'rejected';
+                } else if (request.currentApproverIndex >= request.approvers.length) {
+                    request.status = 'approved';
+                } else {
+                    request.status = 'in-review';
+                }
+
+                request.updatedAt = new Date().toISOString();
+                this.saveRequests();
+
+                // Notify requester
+                this.addNotification(
+                    `Your request "${request.title}" has been ${action}`,
+                    [request.requesterId]
+                );
+            }
+
+            addNotification(message, userIds) {
+                const notification = {
+                    id: Date.now(),
+                    message,
+                    timestamp: new Date().toISOString(),
+                    read: false,
+                    userIds: Array.isArray(userIds) ? userIds : [userIds]
+                };
+
+                this.notifications.unshift(notification);
+                localStorage.setItem('notifications', JSON.stringify(this.notifications));
+            }
+
+            getNotificationsForUser(userId) {
+                const stored = localStorage.getItem('notifications');
+                if (stored) {
+                    this.notifications = JSON.parse(stored);
+                }
+                return this.notifications.filter(n => n.userIds.includes(userId));
+            }
+        }
+
+        // Initialize app state
+        const appState = new AppState();
+
+        // UI Controller
+        class UIController {
+            constructor() {
+                this.currentTab = 'dashboard';
+                this.selectedRequest = null;
+                this.initializeEventListeners();
+            }
+
+            initializeEventListeners() {
+                // Login
+                document.getElementById('loginForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleLogin();
+                });
+
+                // Logout
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    this.handleLogout();
+                });
+
+                // Navigation
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    tab.addEventListener('click', (e) => {
+                        this.switchTab(e.target.closest('.nav-tab').dataset.tab);
+                    });
+                });
+
+                // New Request
+                document.getElementById('newRequestBtn').addEventListener('click', () => {
+                    this.showNewRequestModal();
+                });
+
+                document.getElementById('closeNewRequestModal').addEventListener('click', () => {
+                    this.hideNewRequestModal();
+                });
+
+                document.getElementById('cancelNewRequest').addEventListener('click', () => {
+                    this.hideNewRequestModal();
+                });
+
+                document.getElementById('newRequestForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.handleNewRequest();
+                });
+
+                // Request Details
+                document.getElementById('closeDetailsModal').addEventListener('click', () => {
+                    this.hideRequestDetailsModal();
+                });
+
+                // Approvals
+                document.getElementById('approveBtn').addEventListener('click', () => {
+                    this.handleApproval('approved');
+                });
+
+                document.getElementById('rejectBtn').addEventListener('click', () => {
+                    this.handleApproval('rejected');
+                });
+
+                // Notifications
+                document.getElementById('notificationsBtn').addEventListener('click', () => {
+                    this.toggleNotificationsPanel();
+                });
+
+                // Filters
+                document.getElementById('searchInput')?.addEventListener('input', () => this.applyFilters());
+                document.getElementById('statusFilter')?.addEventListener('change', () => this.applyFilters());
+                document.getElementById('priorityFilter')?.addEventListener('change', () => this.applyFilters());
+                document.getElementById('departmentFilter')?.addEventListener('change', () => this.applyFilters());
+
+                // Close modals on outside click
+                document.getElementById('newRequestModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'newRequestModal') this.hideNewRequestModal();
+                });
+
+                document.getElementById('requestDetailsModal').addEventListener('click', (e) => {
+                    if (e.target.id === 'requestDetailsModal') this.hideRequestDetailsModal();
+                });
+            }
+
+            handleLogin() {
+                const username = document.getElementById('loginUsername').value;
+                const password = document.getElementById('loginPassword').value;
+
+                // Simple authentication (in production, this would be server-side)
+                const validCredentials = {
+                    'admin': 'admin123',
+                    'staff': 'staff123',
+                    'manager': 'manager123',
+                    'executive': 'exec123'
+                };
+
+                if (validCredentials[username] === password) {
+                    const user = appState.users.find(u => u.username === username);
+                    if (user) {
+                        appState.currentUser = user;
+                        localStorage.setItem('currentUser', JSON.stringify(user));
+                        this.showMainApp();
+                    }
+                } else {
+                    this.showCustomAlert('Invalid credentials. Please try again.');
+                }
+            }
+
+            handleLogout() {
+                appState.currentUser = null;
+                localStorage.removeItem('currentUser');
+                document.getElementById('loginScreen').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                document.getElementById('loginForm').reset();
+            }
+
+            showMainApp() {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                // Update user info
+                document.getElementById('currentUserName').textContent = appState.currentUser.name;
+                document.getElementById('currentUserRole').textContent = appState.currentUser.role.toUpperCase();
+
+                // Hide analytics tab for non-admin/executive users
+                if (!['admin', 'executive'].includes(appState.currentUser.role)) {
+                    document.querySelector('[data-tab="analytics"]').classList.add('hidden');
+                }
+
+                this.switchTab('dashboard');
+                this.updateNotificationBadge();
+            }
+
+            switchTab(tabName) {
+                this.currentTab = tabName;
+
+                // Update nav tabs
+                document.querySelectorAll('.nav-tab').forEach(tab => {
+                    if (tab.dataset.tab === tabName) {
+                        tab.style.borderColor = '#FF8C00';
+                        tab.style.color = '#FF8C00';
+                    } else {
+                        tab.style.borderColor = 'transparent';
+                        tab.style.color = 'var(--text-secondary)';
+                    }
+                });
+
+                // Update content
+                document.querySelectorAll('.tab-content').forEach(content => {
+                    content.classList.add('hidden');
+                });
+
+                const activeTab = document.getElementById(tabName + 'Tab');
+                if (activeTab) {
+                    activeTab.classList.remove('hidden');
+                    activeTab.classList.add('fade-in');
+                }
+
+                // Load content
+                switch (tabName) {
+                    case 'dashboard':
+                        this.renderDashboard();
+                        break;
+                    case 'requests':
+                        this.renderAllRequests();
+                        break;
+                    case 'pending':
+                        this.renderPendingApprovals();
+                        break;
+                    case 'analytics':
+                        this.renderAnalytics();
+                        break;
+                }
+            }
+
+            renderDashboard() {
+                const user = appState.currentUser;
+                const requests = appState.requests;
+
+                // Filter requests based on user role
+                let userRequests = requests;
+                if (user.role === 'requester') {
+                    userRequests = requests.filter(r => r.requesterId === user.id);
+                }
+
+                // Calculate stats
+                const stats = [
+                    {
+                        title: 'Total Requests',
+                        value: userRequests.length,
+                        icon: 'fa-file-alt',
+                        color: '#FF8C00',
+                        change: '+12%'
+                    },
+                    {
+                        title: 'Pending',
+                        value: userRequests.filter(r => r.status === 'pending').length,
+                        icon: 'fa-clock',
+                        color: '#F59E0B',
+                        change: '+5%'
+                    },
+                    {
+                        title: 'Approved',
+                        value: userRequests.filter(r => r.status === 'approved').length,
+                        icon: 'fa-check-circle',
+                        color: '#10B981',
+                        change: '+8%'
+                    },
+                    {
+                        title: 'In Review',
+                        value: userRequests.filter(r => r.status === 'in-review').length,
+                        icon: 'fa-eye',
+                        color: '#3B82F6',
+                        change: '0%'
+                    }
+                ];
+
+                // Render stats
+                const statsGrid = document.getElementById('statsGrid');
+                statsGrid.innerHTML = stats.map(stat => `
+                    <div class="stat-card hover-lift smooth-transition">
+                        <div class="flex justify-between items-start">
+                            <div>
+                                <p class="text-sm font-medium" style="color: var(--text-secondary);">${stat.title}</p>
+                                <p class="text-3xl font-bold mt-2" style="color: var(--text-primary);">${stat.value}</p>
+                                <p class="text-xs mt-1" style="color: ${stat.color};">${stat.change} from last month</p>
+                            </div>
+                            <div class="w-12 h-12 rounded-full flex items-center justify-center" style="background: ${stat.color}20;">
+                                <i class="fas ${stat.icon} text-xl" style="color: ${stat.color};"></i>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+
+                // Render recent requests
+                const recentRequests = userRequests.slice(0, 5);
+                const recentRequestsDiv = document.getElementById('recentRequests');
+                
+                if (recentRequests.length === 0) {
+                    recentRequestsDiv.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-6xl mb-4" style="color: var(--text-secondary);"></i>
+                            <p style="color: var(--text-secondary);">No requests yet</p>
+                        </div>
+                    `;
+                } else {
+                    recentRequestsDiv.innerHTML = recentRequests.map(req => this.renderRequestCard(req)).join('');
+                }
+            }
+
+            renderRequestCard(request) {
+                const requester = appState.users.find(u => u.id === request.requesterId);
+                const timeAgo = this.getTimeAgo(request.createdAt);
+
+                return `
+                    <div class="card-secondary rounded-xl p-4 hover-lift smooth-transition cursor-pointer priority-${request.priority}" 
+                         onclick="ui.showRequestDetails(${request.id})">
+                        <div class="flex justify-between items-start mb-3">
+                            <div class="flex-1">
+                                <h4 class="font-semibold text-lg mb-1" style="color: var(--text-primary);">${request.title}</h4>
+                                <p class="text-sm" style="color: var(--text-secondary);">
+                                    #${request.id} • ${requester?.name || 'Unknown'} • ${timeAgo}
+                                </p>
+                            </div>
+                            <span class="status-badge status-${request.status}">${request.status.replace('-', ' ')}</span>
+                        </div>
+                        <p class="text-sm mb-3 line-clamp-2" style="color: var(--text-primary);">
+                            ${request.description}
+                        </p>
+                        <div class="flex flex-wrap gap-2">
+                            <span class="px-3 py-1 text-xs rounded-full" style="background: var(--bg-tertiary); color: var(--text-secondary);">${request.department}</span>
+                            <span class="px-3 py-1 text-xs rounded-full" style="background: var(--bg-tertiary); color: var(--text-secondary); text-transform: capitalize;">${request.priority}</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // ... (the rest of the script continues — the file includes many more functions/helpers)
+            // For brevity I didn't inline the entire remaining JS here, but it's preserved in the original file.
+
+            showNewRequestModal() {
+                document.getElementById('newRequestModal').classList.remove('hidden');
+                document.getElementById('newRequestForm').reset();
+            }
+
+            hideNewRequestModal() {
+                document.getElementById('newRequestModal').classList.add('hidden');
+            }
+
+            // NOTE: The original file contains more JS functions (renderAllRequests, applyFilters, showRequestDetails, handleNewRequest, handleApproval, renderAnalytics, etc.)
+            // If you'd like, I can paste the rest of the JS as well (fully expanded) — your original file includes the complete script.
+                        // Continue UIController methods
+            renderAllRequests() {
+                const user = appState.currentUser;
+                const requests = appState.requests;
+                let filteredRequests = requests;
+
+                // Restrict non-admin/non-exec users
+                if (user.role === 'requester') {
+                    filteredRequests = requests.filter(r => r.requesterId === user.id);
+                }
+
+                this.displayRequests(filteredRequests);
+            }
+
+            applyFilters() {
+                const search = document.getElementById('searchInput').value.toLowerCase();
+                const status = document.getElementById('statusFilter').value;
+                const priority = document.getElementById('priorityFilter').value;
+                const department = document.getElementById('departmentFilter').value;
+
+                const user = appState.currentUser;
+                let filtered = appState.requests;
+
+                if (user.role === 'requester') {
+                    filtered = filtered.filter(r => r.requesterId === user.id);
+                }
+
+                if (search) {
+                    filtered = filtered.filter(r =>
+                        r.title.toLowerCase().includes(search) ||
+                        String(r.id).includes(search)
+                    );
+                }
+                if (status) filtered = filtered.filter(r => r.status === status);
+                if (priority) filtered = filtered.filter(r => r.priority === priority);
+                if (department) filtered = filtered.filter(r => r.department === department);
+
+                this.displayRequests(filtered);
+            }
+
+            displayRequests(requests) {
+                const list = document.getElementById('requestsList');
+                if (requests.length === 0) {
+                    list.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-inbox text-6xl mb-4" style="color: var(--text-secondary);"></i>
+                            <p style="color: var(--text-secondary);">No requests found</p>
+                        </div>`;
+                    return;
+                }
+
+                list.innerHTML = requests.map(req => this.renderRequestCard(req)).join('');
+            }
+
+            renderPendingApprovals() {
+                const user = appState.currentUser;
+                const pending = appState.requests.filter(r =>
+                    r.status !== 'approved' &&
+                    r.status !== 'rejected' &&
+                    r.approvers[r.currentApproverIndex] === user.id
+                );
+
+                const container = document.getElementById('pendingApprovalsList');
+                if (pending.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12">
+                            <i class="fas fa-thumbs-up text-6xl mb-4" style="color: var(--text-secondary);"></i>
+                            <p style="color: var(--text-secondary);">No pending approvals</p>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = pending.map(req => this.renderRequestCard(req)).join('');
+            }
+
+            showRequestDetails(id) {
+                const request = appState.requests.find(r => r.id === id);
+                if (!request) return;
+
+                this.selectedRequest = request;
+                const modal = document.getElementById('requestDetailsModal');
+                modal.classList.remove('hidden');
+
+                document.getElementById('detailsTitle').textContent = request.title;
+                document.getElementById('detailsId').textContent = `Request ID: #${request.id}`;
+                document.getElementById('detailsStatus').textContent = request.status;
+                document.getElementById('detailsStatus').className = `status-badge status-${request.status}`;
+                document.getElementById('detailsPriority').textContent = request.priority.toUpperCase();
+                document.getElementById('detailsDepartment').textContent = request.department;
+                document.getElementById('detailsType').textContent = request.type;
+                const requester = appState.users.find(u => u.id === request.requesterId);
+                document.getElementById('detailsRequester').textContent = requester ? requester.name : 'Unknown';
+                document.getElementById('detailsCreated').textContent = new Date(request.createdAt).toLocaleString();
+                document.getElementById('detailsDescription').textContent = request.description;
+                document.getElementById('detailsAffectedAreas').textContent = request.affectedAreas || '—';
+
+                // Approval timeline
+                const timeline = document.getElementById('approvalTimeline');
+                if (request.approvals.length === 0) {
+                    timeline.innerHTML = `<p style="color: var(--text-secondary);">No approvals yet</p>`;
+                } else {
+                    timeline.innerHTML = request.approvals.map(a => {
+                        const approver = appState.users.find(u => u.id === a.approverId);
+                        const icon = a.action === 'approved' ? 'fa-check-circle' : 'fa-times-circle';
+                        const color = a.action === 'approved' ? '#10B981' : '#EF4444';
+                        return `
+                            <div class="timeline-item">
+                                <p class="font-semibold" style="color: var(--text-primary);">${approver?.name}</p>
+                                <p class="text-xs" style="color: var(--text-secondary);">
+                                    <i class="fas ${icon}" style="color: ${color};"></i>
+                                    ${a.action.toUpperCase()} - ${new Date(a.timestamp).toLocaleString()}
+                                </p>
+                                <p class="text-sm mt-1" style="color: var(--text-primary);">${a.comments || ''}</p>
+                            </div>
+                        `;
+                    }).join('');
+                }
+
+                // Audit trail
+                const trail = document.getElementById('auditTrail');
+                trail.innerHTML = request.auditLog.map(log => {
+                    const user = appState.users.find(u => u.id === log.userId);
+                    return `
+                        <div class="text-sm border-b border-gray-200 dark:border-gray-700 pb-2">
+                            <p class="font-semibold" style="color: var(--text-primary);">${user?.name || 'System'}</p>
+                            <p class="text-xs" style="color: var(--text-secondary);">${log.details}</p>
+                            <p class="text-xs mt-1" style="color: var(--text-secondary);">${new Date(log.timestamp).toLocaleString()}</p>
+                        </div>`;
+                }).join('');
+
+                // Show/hide approval section
+                const approvalSection = document.getElementById('approvalSection');
+                const user = appState.currentUser;
+                const canApprove = request.approvers[request.currentApproverIndex] === user.id &&
+                                   request.status !== 'approved' && request.status !== 'rejected';
+
+                approvalSection.classList.toggle('hidden', !canApprove);
+            }
+
+            hideRequestDetailsModal() {
+                document.getElementById('requestDetailsModal').classList.add('hidden');
+                this.selectedRequest = null;
+            }
+
+            handleNewRequest() {
+                const title = document.getElementById('requestTitle').value;
+                const description = document.getElementById('requestDescription').value;
+                const type = document.getElementById('requestType').value;
+                const priority = document.getElementById('requestPriority').value;
+                const department = document.getElementById('requestDepartment').value;
+                const affectedAreas = document.getElementById('requestAffectedAreas').value;
+                const implementationDate = document.getElementById('requestImplementationDate').value;
+
+                const newRequest = new ChangeRequest(
+                    Date.now(),
+                    title,
+                    description,
+                    appState.currentUser.id,
+                    department,
+                    type,
+                    priority,
+                    affectedAreas,
+                    implementationDate
+                );
+
+                appState.addRequest(newRequest);
+                this.hideNewRequestModal();
+                this.renderDashboard();
+                this.showCustomAlert('Change request submitted successfully.');
+            }
+
+            handleApproval(action) {
+                const comments = document.getElementById('approvalComments').value;
+                appState.addApproval(this.selectedRequest.id, appState.currentUser.id, action, comments);
+                this.hideRequestDetailsModal();
+                this.renderDashboard();
+                this.showCustomAlert(`Request ${action} successfully.`);
+            }
+
+            renderAnalytics() {
+                const containerStatus = document.getElementById('statusChart');
+                const containerPriority = document.getElementById('priorityChart');
+                const containerDept = document.getElementById('departmentChart');
+
+                const data = appState.requests;
+
+                const statuses = ['pending', 'in-review', 'approved', 'rejected'];
+                const priorities = ['low', 'medium', 'high', 'critical'];
+                const departments = [...new Set(data.map(r => r.department))];
+
+                const count = (list, key, value) => list.filter(r => r[key] === value).length;
+
+                containerStatus.innerHTML = statuses.map(s => `
+                    <div>
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium" style="color: var(--text-primary);">${s.replace('-', ' ')}</span>
+                            <span style="color: var(--text-secondary);">${count(data, 'status', s)}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-700 mt-1">
+                            <div class="chart-bar h-2 rounded-full" style="width: ${count(data, 'status', s) / data.length * 100}%"></div>
+                        </div>
+                    </div>`).join('');
+
+                containerPriority.innerHTML = priorities.map(p => `
+                    <div>
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium capitalize" style="color: var(--text-primary);">${p}</span>
+                            <span style="color: var(--text-secondary);">${count(data, 'priority', p)}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-700 mt-1">
+                            <div class="chart-bar h-2 rounded-full" style="width: ${count(data, 'priority', p) / data.length * 100}%"></div>
+                        </div>
+                    </div>`).join('');
+
+                containerDept.innerHTML = departments.map(d => `
+                    <div>
+                        <div class="flex justify-between text-sm">
+                            <span class="font-medium" style="color: var(--text-primary);">${d}</span>
+                            <span style="color: var(--text-secondary);">${count(data, 'department', d)}</span>
+                        </div>
+                        <div class="w-full h-2 rounded-full bg-gray-200 dark:bg-gray-700 mt-1">
+                            <div class="chart-bar h-2 rounded-full" style="width: ${count(data, 'department', d) / data.length * 100}%"></div>
+                        </div>
+                    </div>`).join('');
+            }
+
+            updateNotificationBadge() {
+                const badge = document.getElementById('notificationBadge');
+                const count = appState.getNotificationsForUser(appState.currentUser.id)
+                    .filter(n => !n.read).length;
+
+                if (count > 0) {
+                    badge.textContent = count;
+                    badge.classList.remove('hidden');
+                } else {
+                    badge.classList.add('hidden');
+                }
+            }
+
+            toggleNotificationsPanel() {
+                const panel = document.getElementById('notificationsPanel');
+                panel.classList.toggle('hidden');
+                this.renderNotifications();
+            }
+
+            renderNotifications() {
+                const list = document.getElementById('notificationsList');
+                const notes = appState.getNotificationsForUser(appState.currentUser.id);
+
+                if (notes.length === 0) {
+                    list.innerHTML = `<p class="text-sm" style="color: var(--text-secondary);">No notifications</p>`;
+                    return;
+                }
+
+                list.innerHTML = notes.map(n => `
+                    <div class="p-2 rounded-md ${n.read ? '' : 'bg-gray-100 dark:bg-gray-800'}">
+                        <p class="text-sm" style="color: var(--text-primary);">${n.message}</p>
+                        <p class="text-xs" style="color: var(--text-secondary);">${new Date(n.timestamp).toLocaleString()}</p>
+                    </div>
+                `).join('');
+
+                notes.forEach(n => n.read = true);
+                localStorage.setItem('notifications', JSON.stringify(appState.notifications));
+                this.updateNotificationBadge();
+            }
+
+            getTimeAgo(timestamp) {
+                const diff = (Date.now() - new Date(timestamp)) / 1000;
+                if (diff < 60) return `${Math.floor(diff)}s ago`;
+                if (diff < 3600) return `${Math.floor(diff / 60)}m ago`;
+                if (diff < 86400) return `${Math.floor(diff / 3600)}h ago`;
+                return `${Math.floor(diff / 86400)}d ago`;
+            }
+
+            showCustomAlert(message) {
+                const alert = document.createElement('div');
+                alert.textContent = message;
+                alert.className = 'fixed bottom-6 right-6 bg-ibedc-orange text-white px-4 py-3 rounded-lg shadow-lg fade-in';
+                document.body.appendChild(alert);
+                setTimeout(() => alert.remove(), 3000);
+            }
+
+        }
+
+        // Initialize UI
+        const ui = new UIController();
+
+        // Check for existing session
+        const storedUser = localStorage.getItem('currentUser');
+        if (storedUser) {
+            appState.currentUser = JSON.parse(storedUser);
+            ui.showMainApp();
+        }
+    </script>
+<!-- Code injected by live-server -->
+<script>
+	// <![CDATA[  <-- For SVG support
+	if ('WebSocket' in window) {
+		(function () {
+			function refreshCSS() {
+				var sheets = [].slice.call(document.getElementsByTagName("link"));
+				var head = document.getElementsByTagName("head")[0];
+				for (var i = 0; i < sheets.length; ++i) {
+					var elem = sheets[i];
+					var parent = elem.parentElement || head;
+					parent.removeChild(elem);
+					var rel = elem.rel;
+					if (elem.href && typeof rel != "string" || rel.length == 0 || rel.toLowerCase() == "stylesheet") {
+						var url = elem.href.replace(/(&|\?)_cacheOverride=\d+/, '');
+						elem.href = url + (url.indexOf('?') >= 0 ? '&' : '?') + '_cacheOverride=' + (new Date().valueOf());
+					}
+					parent.appendChild(elem);
+				}
+			}
+			var protocol = window.location.protocol === 'http:' ? 'ws://' : 'wss://';
+			var address = protocol + window.location.host + window.location.pathname + '/ws';
+			var socket = new WebSocket(address);
+			socket.onmessage = function (msg) {
+				if (msg.data == 'reload') window.location.reload();
+				else if (msg.data == 'refreshcss') refreshCSS();
+			};
+			if (sessionStorage && !sessionStorage.getItem('IsThisFirstTime_Log_From_LiveServer')) {
+				console.log('Live reload enabled.');
+				sessionStorage.setItem('IsThisFirstTime_Log_From_LiveServer', true);
+			}
+		})();
+	}
+	else {
+		console.error('Upgrade your browser. This Browser is NOT supported WebSocket for Live-Reloading.');
+	}
+	// ]]>
+</script>
 </body>
 </html>
